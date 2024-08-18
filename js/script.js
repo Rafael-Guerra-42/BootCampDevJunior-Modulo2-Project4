@@ -18,6 +18,7 @@ function GetAdress(){
                 <strong>CEP inválido.</strong>
             </div>
             `;
+            document.getElementById("number").disabled = true;
 
         }else{
 
@@ -26,6 +27,7 @@ function GetAdress(){
             document.getElementById("neighbourhood").value = JSON.stringify(reply.bairro).replace(/['"]+/g, '');
             document.getElementById("city").value = JSON.stringify(reply.localidade).replace(/['"]+/g, '');
             document.getElementById("state").value = JSON.stringify(reply.uf).replace(/['"]+/g, '');
+            document.getElementById("number").disabled = false;
         }
     }
     );
