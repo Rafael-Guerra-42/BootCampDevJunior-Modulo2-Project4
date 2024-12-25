@@ -1,13 +1,58 @@
 indexToIncrement = 0;
 function GetAdress(){
     var CEP = document.getElementById("typedCEP").value;
+    if (document.getElementById("typedCEP").value==""){
+        CleanCEPForm();
+        document.getElementById("alertPlace").innerHTML="";
+        
+    }
+
+
+
+
+
+    $.ajax({
+        type: "GET",
+        url: `https://viacep.com.br/ws/${CEP}/json/`,
+        async: false,
+        success: function(data) {
+          if ("erro" in data){
+            CleanCEPForm();
+            
+            console.log("erro");
+            document.getElementById("alertPlace").innerHTML="";
+            document.getElementById("alertPlace").innerHTML+=
+            `
+            <div class="alert alert-warning" id="alert">
+                <strong>CEP inválido.</strong>
+            </div>
+            `;
+            document.getElementById("number").disabled = true;
+
+          }else{
+
+            
+            document.getElementById("alertPlace").innerHTML="";
+            document.getElementById("adress").value = JSON.stringify(data.logradouro).replace(/['"]+/g, '');
+            document.getElementById("neighbourhood").value = JSON.stringify(data.bairro).replace(/['"]+/g, '');
+            document.getElementById("city").value = JSON.stringify(data.localidade).replace(/['"]+/g, '');
+            document.getElementById("state").value = JSON.stringify(data.uf).replace(/['"]+/g, '');
+            document.getElementById("number").disabled = false;
+          }
+        }
+      });
+
+
+
+    
+
+
+
+      /*
+
     $.getJSON(`https://viacep.com.br/ws/${CEP}/json/`,(reply) =>
     {
-        if (document.getElementById("typedCEP").value==""){
-            CleanCEPForm();
-            document.getElementById("alertPlace").innerHTML="";
-            
-        }
+
         if (("erro" in reply)){
             CleanCEPForm();
             
@@ -31,7 +76,7 @@ function GetAdress(){
             document.getElementById("number").disabled = false;
         }
     }
-    );
+    );*/ 
 };
 function CleanCEPForm(){
     document.getElementById("adress").value="";
@@ -57,7 +102,7 @@ function AddForm(){
         document.getElementById("alertPlace").innerHTML+=
         `
         <div class="alert alert-warning" id="alert">
-            <strong>Formulário Inconpleto.</strong>
+            <strong>Formulário Incompleto.</strong>
         </div>
         `;
 
@@ -81,8 +126,9 @@ function AddForm(){
         </div>
         `;
 
+        CleanCEPForm();
+        CleanInitialForm();
+        document.getElementById("number").disabled=true;
     }
-    CleanCEPForm();
-    CleanInitialForm();
-    document.getElementById("number").disabled=true;
+
 };
